@@ -10,27 +10,28 @@ Foremost, through some metaclass magic, grammars are defined with nice syntax:
 class MyGrammar(Grammar):
     " <Group> "
     
-    # A production rule definition is in the form of a class definition, the docstring representing the production:
+    # A production rule definition is in the form of a class definition, the docstring
+    # specifying the production:
     class Group(Rule):
     	"'(' <Group> ')'" # Single spaces are optional whitespace
     
-    # Rule names are automatically overloaded, unless "@overrides" is applied to a class definition.
-    # This means that the first matching rule is chosen:
+    # Rule names are automatically overloaded, unless "@overrides" is applied to a
+    # class definition.  Each option for the rule is tried in the order of definition.
     class Group(Rule):
     	"'[' <Group> ']'"
 
-    # Base node:
+    # Base case node:
     class Group(Rule):
-    	""
+    	"" # Who said we had to match anything?
 
 try:
-	# Build a parse tree, and just ignore the result for now:
+    # Build a parse tree, and just ignore the result for now:
     MyGrammar('(([] ) \n )')
     
     print "Valid."
 
 except ParseException:
-	print "Invalid."
+    print "Invalid."
 ```
 
 Secondly, through a hopefully smooth interface, a parse tree can be evaluated:
@@ -60,10 +61,11 @@ class SimpleCalculator(Grammar):
 
     class Add(Rule):
         "<Multiply>" # Base case
-        # NB:  Default evaluation will return a single child for us
+        # NB:  Default evaluation will return a single child for us.
 
     class Multiply(Rule):
-        r"<Number> r'x|\*' <Multiply>" # Regular expression allows 'x' or '*', without capturing them.
+        r"<Number> r'x|\*' <Multiply>"
+        # A simple egular expression allows 'x' or '*', without capturing the character.
 
         evaluate = staticmethod(lambda left, right: left * right)
 
