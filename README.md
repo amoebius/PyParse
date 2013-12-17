@@ -3,12 +3,12 @@ PyParse
 
 A module to easily define and evaluate programming langauges in a pythonic setting.
 
-Foremost, through some metaclass magic, grammars are defined with nice syntax:
+Foremost, through some metaclass magic*, grammars are defined with nice syntax:  [*ugly hacks]
 
 ```python
 # Matches a series of balanced parentheses and brackets, with optional whitespace:
 class MyGrammar(Grammar):
-    " <Group> "
+    " <Group> " # Specifies the root production rule
     
     # A production rule definition is in the form of a class definition, the docstring
     # specifying the production:
@@ -22,7 +22,7 @@ class MyGrammar(Grammar):
 
     # Base case node:
     class Group(Rule):
-    	"" # Who said we had to match anything?
+    	""
 
 try:
     # Build a parse tree, and just ignore the result for now:
@@ -65,7 +65,7 @@ class SimpleCalculator(Grammar):
 
     class Multiply(Rule):
         r"<Number> r'x|\*' <Multiply>"
-        # A simple egular expression allows 'x' or '*', without capturing the character.
+        # A simple regular expression allows 'x' or '*', without capturing the character.
 
         evaluate = staticmethod(lambda left, right: left * right)
 
@@ -86,7 +86,7 @@ except ParseException:
 
 The entire method of evaluation is customisable and can be user-defined, so long as the root node is callable.  Awesome.
 
-Thirdly, all forms of class inheritance should behave as expected - allowing you to inherit the functionality of rules and grammars.
+Thirdly, all forms of class inheritance should behave as expected - allowing you to write mix-ins and to extend the functionality of rules and grammars:
 
 ```python
 class FloatCalculator(SimpleCalculator):
@@ -119,6 +119,7 @@ TODO:
  - Parsing strings from these definitions.
  - Making inheritance work and dealing with the existence of 'abstract' Rules and Grammars.
  - Hacky metaclass things to package the nodes in a nice format.
+ - Make "overrides" more intuitive (should return a modified copy of the class, not modify the original)
 - Examples:
  - A calculator, applying the entire interface.
  - A programming language would be nice too.  I hesitate to try python though...
